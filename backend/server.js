@@ -19,6 +19,7 @@ app.use(cors());
 
 // Mount routers
 app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/files', require('./routes/fileRoutes'));
 
 const PORT = process.env.PORT || 5000;
 
