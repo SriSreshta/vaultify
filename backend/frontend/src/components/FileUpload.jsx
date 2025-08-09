@@ -10,7 +10,7 @@ const FileUpload = () => {
 
     try {
       // The API instance is already configured to send the token
-      const res = await api.post('/api/files/upload', formData, {
+      const res = await api.post('/files/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
