@@ -41,12 +41,13 @@ router.get('/', protect, async (req, res) => {
   }
 });
 
-// @route   GET /api/files/:filename
+// @route   GET /api/files/:id/download
 // @desc    Download a single file
 // @access  Private
-router.get('/:filename', protect, async (req, res) => {
+router.get('/:id/download', protect, async (req, res) => {
   try {
-    const files = await gfs.find({ filename: req.params.filename }).toArray();
+    const fileId = new mongoose.Types.ObjectId(req.params.id);
+    const files = await gfs.find({ _id: fileId }).toArray();
 
     if (!files || files.length === 0) {
       return res.status(404).json({ msg: 'No file exists' });
@@ -69,6 +70,9 @@ router.get('/:filename', protect, async (req, res) => {
 
   } catch (err) {
     console.error(err);
+    if (err.name === 'BSONTypeError') {
+        return res.status(400).json({ msg: 'Invalid file ID format' });
+    }
     res.status(500).send('Server Error');
   }
 });
