@@ -1,10 +1,9 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import cors from 'cors';
-import connectDB from './config/db.js';
-import authRoutes from './routes/authRoutes.js';
+const express = require('express');
+const dotenv = require('dotenv');
+const cors = require('cors');
+const connectDB = require('./config/db');
 
-// Load environment variables
+// Load env vars
 dotenv.config();
 
 // Connect to database
@@ -19,7 +18,8 @@ app.use(express.json());
 app.use(cors());
 
 // Mount routers
-app.use('/api/auth', authRoutes);
+app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/files', require('./routes/fileRoutes'));
 
 const PORT = process.env.PORT || 5000;
 
