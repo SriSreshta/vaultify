@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 
-const Signup = () => {
+const Signup = ({ setUser }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -20,49 +20,84 @@ const Signup = () => {
     try {
       const res = await api.post('/auth/signup', { name, email, password });
       localStorage.setItem('token', res.data.token);
+
+      // After signup, fetch user data and update parent state
+      const userRes = await api.get('/auth/me');
+      setUser(userRes.data);
+
       navigate('/dashboard');
     } catch (err) {
-      console.error(err.response.data);
+      console.error(err.response ? err.response.data : err.message);
+      alert('Failed to sign up. User may already exist.');
     }
   };
 
   return (
-    <div>
-      <h1>Sign Up</h1>
-      <form onSubmit={onSubmit}>
-        <div>
-          <input
-            type="text"
-            placeholder="Name"
-            name="name"
-            value={name}
-            onChange={onChange}
-            required
-          />
-        </div>
-        <div>
-          <input
-            type="email"
-            placeholder="Email Address"
-            name="email"
-            value={email}
-            onChange={onChange}
-            required
-          />
-        </div>
-        <div>
-          <input
-            type="password"
-            placeholder="Password"
-            name="password"
-            value={password}
-            onChange={onChange}
-            minLength="6"
-            required
-          />
-        </div>
-        <input type="submit" value="Sign Up" />
-      </form>
+    <div className="bg-gray-100 min-h-screen flex items-center justify-center">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Create Account</h2>
+        <form onSubmit={onSubmit}>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
+              Name
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="name"
+              type="text"
+              placeholder="Your Name"
+              name="name"
+              value={name}
+              onChange={onChange}
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+              Email Address
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="email"
+              type="email"
+              placeholder="you@example.com"
+              name="email"
+              value={email}
+              onChange={onChange}
+              required
+            />
+          </div>
+          <div className="mb-6">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
+              Password
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+              id="password"
+              type="password"
+              name="password"
+              value={password}
+              onChange={onChange}
+              required
+              minLength="6"
+            />
+          </div>
+          <div className="flex items-center justify-between">
+            <button
+              className="bg-blue-300 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+              type="submit"
+            >
+              Sign Up
+            </button>
+          </div>
+        </form>
+        <p className="text-center text-gray-500 text-xs mt-6">
+          Already have an account?{' '}
+          <Link to="/login" className="text-blue-400 hover:text-blue-600">
+            Sign In
+          </Link>
+        </p>
+      </div>
     </div>
   );
 };

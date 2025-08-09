@@ -3,6 +3,20 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
+const { protect } = require('../middleware/authMiddleware');
+
+// @route   GET /api/auth/me
+// @desc    Get current user
+// @access  Private
+router.get('/me', protect, async (req, res) => {
+  try {
+    // req.user is attached by the protect middleware
+    res.json(req.user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
 
 // @route   POST /api/auth/signup
 // @desc    Register a new user
