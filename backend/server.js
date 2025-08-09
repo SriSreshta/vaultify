@@ -15,7 +15,11 @@ const app = express();
 app.use(express.json());
 
 // Enable CORS
-app.use(cors());
+const corsOptions = {
+  origin: 'http://localhost:5173',
+  optionsSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
 
 // Mount routers
 app.use('/api/auth', require('./routes/authRoutes'));
